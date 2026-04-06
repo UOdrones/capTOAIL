@@ -1140,3 +1140,170 @@ body {
   border-top: 1px solid var(--border);
   margin-top: 0.25rem;
 }
+
+/* ================================
+   VESTING PANEL
+   ================================ */
+.vesting-panel {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.04), rgba(59, 130, 246, 0.04));
+}
+
+.vesting-timeline {
+  margin-top: 1rem;
+  padding: 0.5rem 0 1.5rem;
+}
+
+.timeline-track {
+  position: relative;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 999px;
+  margin-bottom: 1.25rem;
+}
+
+.timeline-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.timeline-fill.pre-cliff {
+  background: linear-gradient(90deg, var(--warning), rgba(245, 158, 11, 0.5));
+  opacity: 0.6;
+}
+
+.timeline-fill.past-cliff {
+  background: linear-gradient(90deg, var(--accent), var(--accent-3));
+}
+
+.timeline-cursor {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 14px;
+  height: 14px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.5), 0 0 4px rgba(0,0,0,0.3);
+  transition: left 0.3s ease;
+  z-index: 2;
+}
+
+.timeline-cliff-marker {
+  position: absolute;
+  top: -4px;
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+.cliff-line {
+  width: 2px;
+  height: 14px;
+  background: var(--warning);
+  margin: 0 auto;
+  border-radius: 999px;
+}
+
+.cliff-label {
+  display: block;
+  font-size: 0.55rem;
+  color: var(--warning);
+  text-align: center;
+  margin-top: 2px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.timeline-milestones {
+  position: relative;
+  height: 28px;
+}
+
+.milestone {
+  position: absolute;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.milestone-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  transition: all var(--transition);
+}
+
+.milestone.reached .milestone-dot {
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent-glow);
+}
+
+.milestone-label {
+  font-size: 0.55rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.milestone.reached .milestone-label {
+  color: var(--text-secondary);
+}
+
+/* Vesting status alerts */
+.vesting-status {
+  margin-top: 0.5rem;
+}
+
+.status-alert {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-xs);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.pre-cliff-alert {
+  background: rgba(245, 158, 11, 0.08);
+  color: var(--warning);
+  border: 1px solid rgba(245, 158, 11, 0.15);
+}
+
+.vesting-alert {
+  background: rgba(59, 130, 246, 0.08);
+  color: var(--accent);
+  border: 1px solid rgba(59, 130, 246, 0.15);
+}
+
+.fully-vested-alert {
+  background: rgba(16, 185, 129, 0.08);
+  color: var(--success);
+  border: 1px solid rgba(16, 185, 129, 0.15);
+}
+
+/* Vesting columns in table */
+.holder-vested {
+  font-variant-numeric: tabular-nums;
+}
+
+.vested-value {
+  color: var(--success);
+  font-weight: 600;
+  font-size: 0.82rem;
+}
+
+.holder-unvested {
+  font-variant-numeric: tabular-nums;
+}
+
+.unvested-value {
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: 0.82rem;
+}

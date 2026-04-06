@@ -6,8 +6,10 @@ import InvestmentPanel from './components/InvestmentPanel';
 import ValuationSlider from './components/ValuationSlider';
 import ShareTransfer from './components/ShareTransfer';
 import MemberManager from './components/MemberManager';
+import VestingPanel from './components/VestingPanel';
 import { DEFAULT_SCENARIOS, HOLDER_COLORS } from './data/scenarios';
 import { calculateSAFE, calculatePE, calculateAngelVC, addOptionPool } from './utils/dilution';
+import { applyVesting } from './utils/vesting';
 import './App.css';
 
 const DEFAULT_PARAMS = {
@@ -31,6 +33,16 @@ export default function App() {
   const [investMode, setInvestMode] = useState('safe');
   const [investParams, setInvestParams] = useState(DEFAULT_PARAMS);
   const [showInvestment, setShowInvestment] = useState(false);
+  const [vestingConfig, setVestingConfig] = useState({ enabled: false, years: 4, cliffMonths: 12 });
+  const [elapsedMonths, setElapsedMonths] = useState(0);
+
+  // Apply vesting to holders for display
+  const displayHolders = useMemo(() => {
+    if (!vestingConfig.enabled) return holders;
+    // Mark all holders as vesting-enabled for the global schedule
+    const withVesting = holders.map(h => ({ ...h, vestingEnabled: true, vestingYears: vestingConfig.years, cliffMonths: vestingConfig.cliffMonths }));
+    return applyVesting(withVesting, elapsedMonths);
+  }, [holders, vestingConfig, elapsedMonths]);
 
   // Base holders for delta comparison
   const baseHolders = useMemo(() => [...holders], [scenarioId]); // eslint-disable-line
@@ -228,6 +240,12 @@ export default function App() {
             onCreateScenario={handleCreateScenario}
           />
           <ValuationSlider valuation={valuation} onChange={setValuation} />
+          <VestingPanel
+            vestingConfig={vestingConfig}
+            onConfigChange={setVestingConfig}
+            elapsedMonths={elapsedMonths}
+            onElapsedChange={setElapsedMonths}
+          />
           <ShareTransfer holders={holders} onTransfer={handleTransfer} />
           <MemberManager
             holders={holders}
@@ -251,7 +269,7 @@ export default function App() {
           <div className={`charts-area ${showInvestment && dilutedResult ? 'split-view' : ''}`}>
             {/* Current / Pre-Investment Chart */}
             <CapChart
-              holders={holders}
+              holders={displayHolders}
               valuation={valuation}
               title={showInvestment ? 'Pre-Investment' : `Current — ${DEFAULT_SCENARIOS.find(s => s.id === scenarioId)?.name || 'Custom'}`}
             />
@@ -269,10 +287,11 @@ export default function App() {
 
           {/* Ownership Table */}
           <OwnershipTable
-            holders={showInvestment && dilutedResult ? dilutedResult.holders : holders}
+            holders={showInvestment && dilutedResult ? dilutedResult.holders : displayHolders}
             investorEntries={showInvestment && dilutedResult ? dilutedResult.investors : []}
             valuation={valuation}
-            baseHolders={showInvestment ? holders : null}
+            baseHolders={showInvestment ? displayHolders : null}
+            vestingEnabled={vestingConfig.enabled}
           />
         </section>
       </main>
